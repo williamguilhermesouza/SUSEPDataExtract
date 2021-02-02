@@ -14,6 +14,6 @@ json_data = raw_data.json()
 filtered_data = [product for product in json_data['value'] if product['tipoproduto'] == 'PLANO DE PREVIDÊNCIA']
 
 # filtering the data for process numbers
-#process_numbers = [number for number in filtered_data['numeroprocesso']]
+process_numbers = [number['numeroprocesso'] for number in filtered_data]
 
-print(filtered_data)
+print(process_numbers)
