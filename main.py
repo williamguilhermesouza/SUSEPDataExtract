@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from time import sleep
 
 # getting the data from susep
 raw_data = requests.get('http://dados.susep.gov.br/olinda-ide/servico/produtos/versao/v1/odata/DadosProdutos?$format=json')
@@ -24,9 +25,11 @@ for number in process_numbers:
 
     pdf_link = f'https://www2.susep.gov.br{soup.a["onclick"][15:-1]}'
 
+    pdf_name = f'{pdf_link[-5:]}.pdf'
+
     pdf = requests.get(pdf_link)
 
-    with open(number, 'wb') as output:
+    with open(pdf_name, 'wb') as output:
         output.write(pdf.content)
 
 
