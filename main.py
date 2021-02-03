@@ -18,7 +18,7 @@ filtered_data = [product for product in json_data['value'] if product['tipoprodu
 process_numbers = [number['numeroprocesso'] for number in filtered_data]
 
 for number in process_numbers:
-    susep_page = request.post('https://www2.susep.gov.br/safe/menumercado/REP2/Produto.aspx/Consultar', { 'numeroProcesso' : number })
+    susep_page = requests.post('https://www2.susep.gov.br/safe/menumercado/REP2/Produto.aspx/Consultar', { 'numeroProcesso' : number })
     
     soup = BeautifulSoup(susep_page.text, 'html.parser')
 
