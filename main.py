@@ -1,5 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
+import queue
+from PdfProcessing import PdfDownloader
 
 # getting the data from susep
 try:
@@ -24,8 +26,18 @@ with open('process_numbers.json', 'w') as output:
     output.write(str(process_numbers))
 
 process_errors = []
+numbers_queue = queue.Queue(-1)
+threads = []
+
 
 for number in process_numbers:
+    numbers_queue.put(number)
+
+for i in range(10):
+    threads.append(PdfDownloader(numbers_queue).start())
+
+
+'''
     try:
         susep_page = requests.post('https://www2.susep.gov.br/safe/menumercado/REP2/Produto.aspx/Consultar', { 'numeroProcesso' : number })
     except:
@@ -60,3 +72,5 @@ for number in process_numbers:
 
 with open('errors', 'w') as output:
     output.write(str(process_errors))
+'''
+
