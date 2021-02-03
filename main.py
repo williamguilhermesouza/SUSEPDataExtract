@@ -39,7 +39,7 @@ for number in process_numbers:
     try:
         pdf_link = f'https://www2.susep.gov.br{soup.a["onclick"][15:-1]}'
         
-        pdf_name = f'{str(number).replace('/', '-')}.pdf'
+        pdf_name = f'{str(number).replace("/", "-")}.pdf'
     except:
         error = f'PDF Link construction error in process {number}'
         print(error)
