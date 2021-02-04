@@ -37,7 +37,8 @@ for number in process_numbers:
 print(numbers_queue.qsize())
 
 for i in range(10):
-    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors).start())
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors))
+    threads[i].start()
 
 while not numbers_queue.empty():
     pass
