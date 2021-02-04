@@ -56,3 +56,4 @@ class PdfDownloader(Thread):
 
             else:
                 self.queueLock.release()
+                return
