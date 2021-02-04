@@ -28,14 +28,22 @@ with open('process_numbers.json', 'w') as output:
 process_errors = []
 numbers_queue = queue.Queue(-1)
 threads = []
+exit_flag = 0
 
 
 for number in process_numbers:
     numbers_queue.put(number)
 
-for i in range(10):
-    threads.append(PdfDownloader(numbers_queue).start())
+print(numbers_queue)
 
+for i in range(10):
+    threads.append(PdfDownloader(numbers_queue, exit_flag).start())
+
+while not numbers_queue.empty():
+    pass
+
+for t in threads:
+    t.join()
 
 '''
     try:
