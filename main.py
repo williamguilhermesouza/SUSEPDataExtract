@@ -34,16 +34,22 @@ exit_flag = 0
 for number in process_numbers:
     numbers_queue.put(number)
 
-print(numbers_queue)
+print(numbers_queue.qsize())
 
 for i in range(10):
-    threads.append(PdfDownloader(numbers_queue, exit_flag).start())
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors).start())
 
 while not numbers_queue.empty():
     pass
 
+exit_flag = 1
+
 for t in threads:
     t.join()
+
+with open('errors', 'w') as output:
+    output.write(str(process_errors))
+
 
 '''
     try:
@@ -78,7 +84,4 @@ for t in threads:
     with open(pdf_name, 'wb') as output:
         output.write(pdf.content)
 
-with open('errors', 'w') as output:
-    output.write(str(process_errors))
 '''
-
