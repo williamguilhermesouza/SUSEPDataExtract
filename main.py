@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import queue
+import threading
 from PdfProcessing import PdfDownloader
 
 # getting the data from susep
@@ -28,16 +29,20 @@ with open('process_numbers.json', 'w') as output:
 process_errors = []
 numbers_queue = queue.Queue(-1)
 threads = []
+queueLock = threading.Lock()
 exit_flag = 0
 
 
+queueLock.acquire()
 for number in process_numbers:
     numbers_queue.put(number)
+queueLock.release()
 
-print(numbers_queue.qsize())
+
+print(f'Total de processos: {numbers_queue.qsize()}')
 
 for i in range(10):
-    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors))
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock))
     threads[i].start()
 
 while not numbers_queue.empty():
@@ -50,6 +55,7 @@ for t in threads:
 
 with open('errors', 'w') as output:
     output.write(str(process_errors))
+
 
 
 '''
