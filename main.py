@@ -59,7 +59,7 @@ with open('errors.json', 'w') as output:
 # retying errors
 
 error_numbers = [number['numeroprocesso'] for number in process_errors]
-
+threads = []
 exit_flag = 0
 
 
