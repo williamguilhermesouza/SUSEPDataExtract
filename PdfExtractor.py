@@ -56,6 +56,19 @@ def main(pdf_name):
                 if search_cnpj != -1:
                     cnpj = page_text[search_cnpj+11 : search_cnpj+32].replace('\n','')
                     print(cnpj)
+
+                search_entity_name = page_text.find('Art. 1°')
+                if search_entity_name != -1:
+                    entity_name_comma = page_text.find(',')
+                    entity_name = page_text[search_entity_name+12:entity_name_comma]
+                    print(entity_name)
+
+                search_description = page_text.find('institui o')
+                if search_description != -1:
+                    description_comma = page_text.find(',',search_description)
+                    description_second_comma = page_text.find(',', description_comma+11)
+                    description = page_text[search_description+11:description_second_comma].replace('\n','')
+                    print(description)
         except:
             print('error extracting pdf')
 
