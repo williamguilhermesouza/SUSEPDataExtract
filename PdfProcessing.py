@@ -27,7 +27,7 @@ class PdfDownloader(Thread):
                 except:
                     error = f'Query error in process {number}'
                     print(error)
-                    self.process_errors.append({number: error})
+                    self.process_errors.append({'numeroprocesso': number, 'msg': error})
                     continue
 
                 soup = BeautifulSoup(susep_page.text, 'html.parser')
@@ -39,7 +39,7 @@ class PdfDownloader(Thread):
                 except:
                     error = f'PDF Link construction error in process {number}'
                     print(error)
-                    self.process_errors.append({number: error})
+                    self.process_errors.append({'numeroprocesso': number, 'msg': error})
                     continue
 
 
@@ -48,7 +48,7 @@ class PdfDownloader(Thread):
                 except:
                     error = f'PDF error in process {number}'
                     print(error)
-                    self.process_errors.append({number: error})
+                    self.process_errors.append({'numeroprocesso':number, 'msg': error})
                     continue
 
                 with open(pdf_name, 'wb') as output:

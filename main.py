@@ -39,7 +39,7 @@ for number in process_numbers:
 queueLock.release()
 
 
-print(f'Total de processos: {numbers_queue.qsize()}')
+print(f'Process total: {numbers_queue.qsize()}')
 
 for i in range(10):
     threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock))
@@ -53,42 +53,32 @@ exit_flag = 1
 for t in threads:
     t.join()
 
-with open('errors', 'w') as output:
+with open('errors.json', 'w') as output:
     output.write(str(process_errors))
 
+# retying errors
+
+error_numbers = [number['numeroprocesso'] for number in process_errors]
+
+exit_flag = 0
 
 
-'''
-    try:
-        susep_page = requests.post('https://www2.susep.gov.br/safe/menumercado/REP2/Produto.aspx/Consultar', { 'numeroProcesso' : number })
-    except:
-        error = f'Query error in process {number}'
-        print(error)
-        process_errors.append({number: error})
-        continue
-
-    soup = BeautifulSoup(susep_page.text, 'html.parser')
-
-    try:
-        pdf_link = f'https://www2.susep.gov.br{soup.a["onclick"][15:-1]}'
-        
-        pdf_name = f'{str(number).replace("/", "-")}.pdf'
-    except:
-        error = f'PDF Link construction error in process {number}'
-        print(error)
-        process_errors.append({number: error})
-        continue
+queueLock.acquire()
+for number in error_numbers:
+    numbers_queue.put(number)
+queueLock.release()
 
 
-    try:
-        pdf = requests.get(pdf_link)
-    except:
-        error = f'PDF error in process {number}'
-        print(error)
-        process_errors.append({number: error})
-        continue
+print(f'Errors total: {numbers_queue.qsize()}')
 
-    with open(pdf_name, 'wb') as output:
-        output.write(pdf.content)
+for i in range(10):
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock))
+    threads[i].start()
 
-'''
+while not numbers_queue.empty():
+    pass
+
+exit_flag = 1
+
+for t in threads:
+    t.join()
