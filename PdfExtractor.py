@@ -48,10 +48,14 @@ def main(pdf_name):
         pdfReader = PyPDF2.PdfFileReader(inputfile)
         try:
             numPages = pdfReader.getNumPages()
-            print(numPages)
 
             for page_number in range(numPages):
-                page_text = pdfReader.getPage(page_number)
+                page_text = pdfReader.getPage(page_number).extractText()
+
+                search_cnpj = page_text.find('CNPJ de n')
+                if search_cnpj != -1:
+                    cnpj = page_text[search_cnpj+11 : search_cnpj+32].replace('\n','')
+                    print(cnpj)
         except:
             print('error extracting pdf')
 
