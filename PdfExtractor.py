@@ -49,6 +49,8 @@ def main(pdf_name):
         try:
             numPages = pdfReader.getNumPages()
 
+            search_table_bool = False
+
             for page_number in range(numPages):
                 page_text = pdfReader.getPage(page_number).extractText()
 
@@ -69,6 +71,21 @@ def main(pdf_name):
                     description_second_comma = page_text.find(',', description_comma+11)
                     description = page_text[search_description+11:description_second_comma].replace('\n','')
                     print(description)
+
+                search_table = page_text.find('tábuas biométricas de sobrevivência')
+                if search_table != -1 and not search_table_bool:
+                    search_table_bool = True
+                    search_male = page_text.find('masculino', search_table)
+                    search_female = page_text.find('feminino', search_table)
+                    male = page_text[search_male+10:search_male+18].replace('\n','')
+                    female = page_text[search_female+9:search_female+16].replace('\n','')
+                    print(male, female)
+
+                search_charge = page_text.find('cobrará carregamento')
+                if search_charge != -1:
+                    percent = page_text.find('%', search_charge)
+                    charge = page_text[percent - 2:percent+1] 
+                    print(charge)
         except:
             print('error extracting pdf')
 
