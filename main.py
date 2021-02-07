@@ -27,6 +27,7 @@ with open('process_numbers.json', 'w') as output:
     output.write(str(process_numbers))
 
 process_errors = []
+outputJSON = []
 numbers_queue = queue.Queue(-1)
 threads = []
 queueLock = threading.Lock()
@@ -42,7 +43,7 @@ queueLock.release()
 print(f'Process total: {numbers_queue.qsize()}')
 
 for i in range(10):
-    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock))
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock, outputJSON))
     threads[i].start()
 
 while not numbers_queue.empty():
@@ -52,6 +53,9 @@ exit_flag = 1
 
 for t in threads:
     t.join()
+
+with open('output.json', 'w') as output:
+    output.write(str(outputJSON))
 
 with open('errors.json', 'w') as output:
     output.write(str(process_errors))

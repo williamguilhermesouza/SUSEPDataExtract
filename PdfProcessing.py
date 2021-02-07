@@ -1,14 +1,16 @@
 from threading import Thread
 import requests
 from bs4 import BeautifulSoup
+import PdfExtractor
 
 class PdfDownloader(Thread):
-    def __init__(self, queue, exit_flag, process_errors, queueLock):
+    def __init__(self, queue, exit_flag, process_errors, queueLock, outputJSON):
         Thread.__init__(self)
         self.queue = queue
         self.exit_flag = exit_flag
         self.process_errors = process_errors
         self.queueLock = queueLock
+        self.outputJSON = outputJSON
 
     def run(self):
         while not self.exit_flag:
@@ -53,6 +55,8 @@ class PdfDownloader(Thread):
 
                 with open(pdf_name, 'wb') as output:
                     output.write(pdf.content)
+
+                PdfExtractor.main(pdf_name, self.outputJSON, number)
 
             else:
                 self.queueLock.release()
