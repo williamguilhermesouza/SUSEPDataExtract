@@ -50,9 +50,13 @@ def main(pdf_name):
             numPages = pdfReader.getNumPages()
 
             search_table_bool = False
+            lone_payment = temporary_monthly = certain_monthly = lifelong_monthly = granted_monthly = indicated_reversible = \
+                partner_minor_age_reversible = partner_reversible = minor_age_reversible = 'N/A'
 
             for page_number in range(numPages):
                 page_text = pdfReader.getPage(page_number).extractText()
+
+                #process_number
 
                 search_cnpj = page_text.find('CNPJ de n')
                 if search_cnpj != -1:
@@ -72,6 +76,8 @@ def main(pdf_name):
                     description = page_text[search_description+11:description_second_comma].replace('\n','')
                     print(description)
 
+                #distribution_date
+
                 search_table = page_text.find('tábuas biométricas de sobrevivência')
                 if search_table != -1 and not search_table_bool:
                     search_table_bool = True
@@ -84,8 +90,79 @@ def main(pdf_name):
                 search_charge = page_text.find('cobrará carregamento')
                 if search_charge != -1:
                     percent = page_text.find('%', search_charge)
-                    charge = page_text[percent - 2:percent+1] 
-                    print(charge)
+                    loading_tax = page_text[percent - 2:percent+1] 
+                    print(loading_tax)
+
+                #search_interest = page_text.find('interesse')
+
+                # reversion_percent
+                # susep_status
+
+                search_lone = page_text.find('pagamento único')
+                if search_lone != -1:
+                    lone_payment = 'SIM'
+                    print(lone_payment)
+
+                search_monthly = page_text.find('mensal temporária')
+                if search_monthly != -1:
+                    temporary_monthly = 'SIM'
+                    print(temporary_monthly)
+ 
+                search_certain = page_text.find('prazo certo')
+                if search_certain != -1:
+                    certain_monthly = 'SIM'
+                    print(certain_monthly)                 
+
+                search_lifelong = page_text.find('mensal vitalícia')
+                if search_lifelong != -1:
+                    lifelong_monthly = 'SIM'
+
+                search_minimum = page_text.find('vitalícia com prazo mínimo')
+                if search_minimum != -1:
+                    granted_monthly = 'SIM'
+
+                search_reversible = page_text.find('vitalícia reversível ao beneficiário')
+                if search_reversible != -1:
+                    indicated_reversible = 'SIM'
+
+                search_partner_minor = page_text.find('vitalícia reversível ao cônjuge com continuidade aos menores')
+                if search_partner_minor != -1:
+                    partner_minor_age_reversible = 'SIM'
+
+                search_partner = page_text.find('vitalícia reversível ao cônjuge:')
+                if search_partner != -1:
+                    partner_reversible = 'SIM'
+
+                search_minor_reversible = page_text.find('reversível aos menores')
+                if search_minor_reversible != -1:
+                    minor_age_reversible = 'SIM'
+                
+                #DA APLICAÇÃO DOS RECURSOS
+
+                minimum_value_search = page_text.find('se o saldo for inferior a')
+                if minimum_value_search != -1:
+                    minimum_value = page_text[minimum_value_search+30:minimum_value_search+36]
+                    print(minimum_value)
+                
+                grace_period_search = page_text.find('resgate')
+                if grace_period_search != -1:
+                    grace_search = page_text.find('prazo de carência', grace_period_search)
+                    grace_comma = page_text.find(',',grace_search)
+                    if grace_search != -1 and grace_comma != -1:
+                        grace_period = page_text[grace_search+17:grace_comma]
+                        print(grace_period)
+
+                search_portable_deadline = page_text.find('portabilidade')
+                if search_portable_deadline != -1:
+                    portable_search = page_text.find('prazo de carência', search_portable_deadline)
+                    portable_comma = page_text.find(',', portable_search)
+                    if portable_search != -1 and portable_comma != -1:
+                        portable_deadline = page_text[portable_search+17:portable_comma]
+                        print(portable_deadline)
+
+                #propria entidade
+
+
         except:
             print('error extracting pdf')
 
