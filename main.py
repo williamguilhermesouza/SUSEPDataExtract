@@ -76,7 +76,7 @@ queueLock.release()
 print(f'Errors total: {numbers_queue.qsize()}')
 
 for i in range(10):
-    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock))
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock, outputJSON))
     threads[i].start()
 
 while not numbers_queue.empty():
