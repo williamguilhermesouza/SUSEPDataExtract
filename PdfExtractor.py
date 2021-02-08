@@ -73,7 +73,7 @@ def main(pdf_name, outputJSON, process_number):
                     description_second_comma = page_text.find(',', description_comma+11)
                     description = page_text[search_description+11:description_second_comma].replace('\n','')
 
-                distribution_date = '14/10/2013'
+                distribution_date = ''
 
                 search_table = page_text.find('tábuas biométricas de sobrevivência')
                 if search_table != -1 and not search_table_bool:
@@ -94,7 +94,12 @@ def main(pdf_name, outputJSON, process_number):
                     if percent != -1:
                         interest_tax = page_text[search_interest+28:percent+1]
 
-                # reversion_percent
+                search_reversion = page_text.find('percentual de reversão')
+                reversion_percent = '0%'
+                if search_reversion != -1:
+                    percent = page_text.find('%', search_reversion)
+                    if percent != -1:
+                        reversion_percent = page_text[search_reversion+23:percent+1]
                 # susep_status
 
                 search_lone = page_text.find('pagamento único')
@@ -168,7 +173,7 @@ def main(pdf_name, outputJSON, process_number):
                 "female_atuarial_table": female,
                 "loading_tax": loading_tax,
                 "interest_tax": interest_tax,
-                "reversion_percent": "",
+                "reversion_percent": reversion_percent,
                 "SUSEP_status": "",
                 "lone_payment": lone_payment,
                 "temporary_monthly": temporary_monthly,
@@ -186,7 +191,6 @@ def main(pdf_name, outputJSON, process_number):
                 "portability_grace_period_own_entity": "",
             })
 
-            print(outputJSON)
 
         except:
             print('error extracting pdf')
@@ -196,3 +200,4 @@ def main(pdf_name, outputJSON, process_number):
 if __name__ == '__main__':
     output = []
     main('001-00210-89.pdf', output, '001-00210-89')
+    print(output)
