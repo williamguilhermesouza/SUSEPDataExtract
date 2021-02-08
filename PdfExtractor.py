@@ -52,6 +52,9 @@ def main(pdf_name, outputJSON, process_number):
             search_table_bool = False
             lone_payment = temporary_monthly = certain_monthly = lifelong_monthly = granted_monthly = indicated_reversible = \
                 partner_minor_age_reversible = partner_reversible = minor_age_reversible = 'N/A'
+            
+            cnpj = entity_name = description = distribution_date = male = female = loading_tax = interest_tax = reversion_percent = \
+                susep_status = resources_application = minimum_value = grace_period = portable_deadline = portable_own_deadline = ''
 
             for page_number in range(numPages):
                 page_text = pdfReader.getPage(page_number).extractText()
@@ -102,6 +105,8 @@ def main(pdf_name, outputJSON, process_number):
                         reversion_percent = page_text[search_reversion+23:percent+1]
                 # susep_status
 
+                susep_status = ''
+
                 search_lone = page_text.find('pagamento único')
                 if search_lone != -1:
                     lone_payment = 'SIM'
@@ -140,13 +145,13 @@ def main(pdf_name, outputJSON, process_number):
                 
                 #DA APLICAÇÃO DOS RECURSOS
 
+                resources_application = ''
+
                 minimum_value_search = page_text.find('se o saldo for inferior a')
-                minimum_value = ""
                 if minimum_value_search != -1:
                     minimum_value = page_text[minimum_value_search+30:minimum_value_search+36]
                 
                 grace_period_search = page_text.find('resgate')
-                grace_period = ""
                 if grace_period_search != -1:
                     grace_search = page_text.find('prazo de carência', grace_period_search)
                     grace_comma = page_text.find(',',grace_search)
@@ -154,7 +159,6 @@ def main(pdf_name, outputJSON, process_number):
                         grace_period = page_text[grace_search+17:grace_comma]
 
                 search_portable_deadline = page_text.find('portabilidade')
-                portable_deadline = ""
                 if search_portable_deadline != -1:
                     portable_search = page_text.find('prazo de carência', search_portable_deadline)
                     portable_comma = page_text.find(',', portable_search)
@@ -174,7 +178,7 @@ def main(pdf_name, outputJSON, process_number):
                 "loading_tax": loading_tax,
                 "interest_tax": interest_tax,
                 "reversion_percent": reversion_percent,
-                "SUSEP_status": "",
+                "SUSEP_status": susep_status,
                 "lone_payment": lone_payment,
                 "temporary_monthly": temporary_monthly,
                 "certain_monthly": certain_monthly,
@@ -184,11 +188,11 @@ def main(pdf_name, outputJSON, process_number):
                 "monthly_reversible_to_partner_with_minors_continuation": partner_minor_age_reversible,
                 "monthly_partner_reversible": partner_reversible,
                 "monthly_minor_age_reversible": minor_age_reversible,
-                "resources_application": "",
+                "resources_application": resources_application,
                 "minimum_value": minimum_value,
                 "grace_period": grace_period,
                 "portability_grace_period": portable_deadline,
-                "portability_grace_period_own_entity": "",
+                "portability_grace_period_own_entity": portable_own_deadline
             })
 
 
