@@ -8,7 +8,7 @@ import PdfOCRParser
 # This function may call the pdfocrparser to parse an image pdf to text
 # this is disabled by default as the ocr parsing may make the program much slower
 # than without it 
-def main(pdf_name, outputJSON, process_number, ocr=False):
+def main(pdf_name, outputJSON, process_number, scrapedInformation, ocr=False):
 
     # defining the placeholder variables that will be passed as a dictionary outside the function
     search_table_bool = False
@@ -17,6 +17,12 @@ def main(pdf_name, outputJSON, process_number, ocr=False):
     
     cnpj = entity_name = description = distribution_date = male = female = loading_tax = interest_tax = reversion_percent = \
         susep_status = resources_application = minimum_value = grace_period = portable_deadline = portable_own_deadline = ''
+
+    # passing the scraped information from web page to the variables
+    entity_name = scrapedInformation[0]
+    description = scrapedInformation[1]
+    distribution_date = scrapedInformation[2]
+    susep_status = scrapedInformation[3]
 
     # defining the Regex expressions
     cnpj_pattern = re.compile(r"[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2}")
@@ -77,7 +83,6 @@ def main(pdf_name, outputJSON, process_number, ocr=False):
                     description = page_text[search_description+11:description_second_comma].replace('\n','')
 
             #TODO distribution date
-            distribution_date = ''
 
             # trying to find atuarial table, and then extracting the info
             search_table = page_text.find('tábuas biométricas de sobrevivência')
@@ -112,7 +117,6 @@ def main(pdf_name, outputJSON, process_number, ocr=False):
                     reversion_percent = page_text[search_reversion+23:percent+1]
             
             #TODO susep status comes from download page
-            susep_status = ''
 
             # YES / NO block , if the info is found within the document flag it as 
             # yes and else no
