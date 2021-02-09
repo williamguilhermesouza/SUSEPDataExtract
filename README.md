@@ -10,7 +10,7 @@ The repository with the challenge specifications can be found [here](https://git
 
 The objectives of the challenge consisted of four main items:
 - Extract and format the data from SUSEP [json](http://www.susep.gov.br/menu/consulta-de-produtos-1)
-- Download and save all documents from the query in SUSEP site: [http://www.susep.gov.br/menu/consulta-de-produtos-1]
+- Download and save all documents from the query in SUSEP site: http://www.susep.gov.br/menu/consulta-de-produtos-1
 - Extract interest data from the documents downloaded
 - Save the extracted data to an output JSON
 
