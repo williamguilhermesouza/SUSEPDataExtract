@@ -30,3 +30,19 @@ the Pdf files and for calling the last file, to extract the data from the pdfs.
 #### PdfExtractor.py
 The PdfExtractor holds the logic behind the extraction of information in the downloaded pdf files. It passes the data extracted back to the main
 file, so it can output it in the saved json.
+
+### How to use
+
+The project uses [pipenv](https://pypi.org/project/pipenv/) project management. So, to run the project you must install pipenv with the command:
+
+`pip install pipenv`
+
+After installing pipenv simple run:
+
+`pipenv install`
+
+to install dependencies.
+
+And then run the main file with:
+
+`pipenv run python main.py`
