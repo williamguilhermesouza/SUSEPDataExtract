@@ -14,13 +14,14 @@ import PdfExtractor
 # the code in the run method.
 class PdfDownloader(Thread):
     # Initializing the variables that are passed from the main thread
-    def __init__(self, queue, exit_flag, process_errors, queueLock, outputJSON):
+    def __init__(self, queue, exit_flag, process_errors, queueLock, outputJSON, ocr=False):
         Thread.__init__(self)
         self.queue = queue
         self.exit_flag = exit_flag
         self.process_errors = process_errors
         self.queueLock = queueLock
         self.outputJSON = outputJSON
+        self.ocr = ocr
     # run method that holds all the code
     def run(self):
         # looks for an exit flag controlled by the main thread 
@@ -68,7 +69,7 @@ class PdfDownloader(Thread):
                 with open(pdf_name, 'wb') as output:
                     output.write(pdf.content)
                 # calling pdf extractor to work on the pdf file and extract info
-                PdfExtractor.main(pdf_name, self.outputJSON, number)
+                PdfExtractor.main(pdf_name, self.outputJSON, number, self.ocr)
             # when the queue is empty release the lock and return the thread
             else:
                 self.queueLock.release()

@@ -3,7 +3,16 @@ from bs4 import BeautifulSoup
 import queue
 import threading
 import json
+import sys
 from PdfProcessing import PdfDownloader
+
+# getting the ocr flag from program entry
+args = sys.argv
+ocr = False
+for arg in args:
+    if arg == 'ocr' or arg == '--ocr':
+        print(arg)
+        ocr = True
 
 # getting the data from susep
 try:
@@ -47,8 +56,8 @@ queueLock.release()
 print(f'Process total: {numbers_queue.qsize()}')
 
 # creating threads using pdf downloader class
-for i in range(10):
-    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock, outputJSON))
+for i in range(20):
+    threads.append(PdfDownloader(numbers_queue, exit_flag, process_errors, queueLock, outputJSON, ocr))
     threads[i].start()
 
 # holding main thread until queue is empty
