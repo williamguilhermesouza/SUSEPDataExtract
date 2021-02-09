@@ -27,7 +27,9 @@ def main(pdf_name, outputJSON, process_number, ocr=False):
     pdfReader = PyPDF2.PdfFileReader(inputfile)
 
     # trying to get description from document title
-    description = pdfReader.getDocumentInfo().title
+    description = pdfReader.getDocumentInfo()
+    if description != None:
+        description = description.title
 
     # try block with main logic, gets the number of pages then iterates through them
     try:
