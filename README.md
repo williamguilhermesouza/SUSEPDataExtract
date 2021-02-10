@@ -31,6 +31,9 @@ the Pdf files and for calling the last file, to extract the data from the pdfs.
 The PdfExtractor holds the logic behind the extraction of information in the downloaded pdf files. It passes the data extracted back to the main
 file, so it can output it in the saved json.
 
+#### PdfOCRParser.py
+This class is used to parse pdf image files, as the ones scanned, into text. It is only enabled when the program is executed with the 'ocr' flag. The class is not used as standard because parsing the files to text with ocr takes too long, and then it would make the execution much slower. 
+
 ### How to use
 
 The project uses [pipenv](https://pypi.org/project/pipenv/) project management. So, to run the project you must install pipenv with the command:
