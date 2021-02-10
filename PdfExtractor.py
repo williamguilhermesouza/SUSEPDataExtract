@@ -8,7 +8,7 @@ import PdfOCRParser
 # This function may call the pdfocrparser to parse an image pdf to text
 # this is disabled by default as the ocr parsing may make the program much slower
 # than without it 
-def main(pdf_name, outputJSON, process_number, scrapedInformation, ocr=False):
+def main(pdf_name, outputJSON, process_number, scrapedInformation=['','','','', '', ''], ocr=False):
 
     # defining the placeholder variables that will be passed as a dictionary outside the function
     search_table_bool = False
@@ -16,13 +16,15 @@ def main(pdf_name, outputJSON, process_number, scrapedInformation, ocr=False):
         partner_minor_age_reversible = partner_reversible = minor_age_reversible = 'N/A'
     
     cnpj = entity_name = description = distribution_date = male = female = loading_tax = interest_tax = reversion_percent = \
-        susep_status = resources_application = minimum_value = grace_period = portable_deadline = portable_own_deadline = ''
+        susep_status = resources_application = minimum_value = grace_period = portable_deadline = portable_own_deadline = \
+        commercial_begin = commercial_end = ''
 
     # passing the scraped information from web page to the variables
     entity_name = scrapedInformation[0]
     description = scrapedInformation[1]
-    distribution_date = scrapedInformation[2]
-    susep_status = scrapedInformation[3]
+    susep_status = scrapedInformation[2]
+    distribution_date = commercial_begin = scrapedInformation[3]
+    commercial_end = scrapedInformation[4]
 
     # defining the Regex expressions
     cnpj_pattern = re.compile(r"[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2}")
@@ -33,9 +35,9 @@ def main(pdf_name, outputJSON, process_number, scrapedInformation, ocr=False):
     pdfReader = PyPDF2.PdfFileReader(inputfile)
 
     # trying to get description from document title
-    description = pdfReader.getDocumentInfo()
-    if description != None:
-        description = description.title
+    document_info = pdfReader.getDocumentInfo()
+    if document_info != None and description == '':
+        description = description.title()
 
     # try block with main logic, gets the number of pages then iterates through them
     try:
@@ -66,12 +68,12 @@ def main(pdf_name, outputJSON, process_number, scrapedInformation, ocr=False):
             if cnpj_search: 
                 cnpj = cnpj_search.group(0)
             
-
-            # using find to extract entity_name
-            search_entity_name = page_text.find('Art. 1°')
-            if search_entity_name != -1:
-                entity_name_comma = page_text.find(',')
-                entity_name = page_text[search_entity_name+12:entity_name_comma]
+            # using find to extract entity_name if not scraped from web
+            if entity_name == '':
+                search_entity_name = page_text.find('Art. 1°')
+                if search_entity_name != -1:
+                    entity_name_comma = page_text.find(',')
+                    entity_name = page_text[search_entity_name+12:entity_name_comma]
 
             # checking the document title for description, if there is no title try to scrape
             # description
@@ -211,7 +213,9 @@ def main(pdf_name, outputJSON, process_number, scrapedInformation, ocr=False):
             "minimum_value": minimum_value,
             "grace_period": grace_period,
             "portability_grace_period": portable_deadline,
-            "portability_grace_period_own_entity": portable_own_deadline
+            "portability_grace_period_own_entity": portable_own_deadline,
+            "commercial_begin": commercial_begin,
+            "commercial_end": commercial_end
         })
 
     # except block to prevent function from failing 
@@ -225,7 +229,6 @@ if __name__ == '__main__':
     output = []
     main('001-00210-89.pdf', output, '001-00210-89')
     main('10.001828-00-21.pdf', output, '10.001828-00-21')
-    main('15414.900943-2013-72.pdf', output, '15414.900943-2013-72')
 
 
     for process in output:

@@ -73,10 +73,39 @@ class PdfDownloader(Thread):
                 try:
                     entity_name = ''
                     process_description = ''
-                    distribution_date = ''
                     susep_status = ''
-                    scrapedInformation = [entity_name, process_description, distribution_date, susep_status]
+                    commercial_begin = ''
+                    commercial_end = ''
 
+                    data_fieldset = soup.find_all('fieldset')[1]
+                    data_div = data_fieldset.find_all('div')
+                    
+                    entity_name = str(data_div[1]).strip('</div>')
+                    process_description = str(data_div[2]).strip('</div>')
+                    susep_status = str(data_div[4]).strip('</div>')
+
+                    colon = entity_name.find(':')
+                    entity_name = entity_name[colon+10:]
+
+                    colon = process_description.find(':')
+                    process_description = process_description[colon+10:]
+
+                    colon = susep_status.find(':')
+                    susep_status = susep_status[colon+10:]
+
+                    tr_list = soup.find_all('tr')
+                    data_row = tr_list[1].find_all('td')
+
+                    commercial_begin = str(data_row[1]).strip('</td>')
+                    commercial_end = str(data_row[2]).strip('</td>')
+
+                    signal_location = commercial_begin.find('>')
+                    commercial_begin = commercial_begin[signal_location+1:]
+
+                    signal_location = commercial_end.find(';')
+                    commercial_end = commercial_end[signal_location+2:]
+
+                    scrapedInformation = [entity_name, process_description, susep_status, commercial_begin, commercial_end]
 
 
                 except:
